@@ -31,8 +31,10 @@ public:
   BatchBuilder() : bwr_(), record_num_(0) {}
 
   void AddVertex(const std::string& label, const PropertyMap& prop_map);
-  void AddEdge(const std::string& label, const std::string& src_label, const std::string& dst_label,
-               const std::string& src_id, const std::string& dst_id, const PropertyMap& prop_map);
+  void AddEdge(const std::string& label, int64_t edge_inner_id,
+               const std::string& src_label, const std::string& src_id,
+               const std::string& dst_label, const std::string& dst_id,
+               const PropertyMap& prop_map);
   gsw::BatchWriteRequest AsRequest(const std::string& client_id = "DEFAULT");
   uint32_t Size() const { return record_num_; }
   void Clear();
@@ -59,8 +61,10 @@ void BatchBuilder::AddVertex(const std::string& label, const PropertyMap& prop_m
 }
 
 inline
-void BatchBuilder::AddEdge(const std::string& label, const std::string& src_label, const std::string& dst_label,
-                           const std::string& src_id, const std::string& dst_id, const PropertyMap& prop_map) {
+void BatchBuilder::AddEdge(const std::string& label, int64_t edge_inner_id,
+                           const std::string& src_label, const std::string& src_id,
+                           const std::string& dst_label, const std::string& dst_id,
+                           const PropertyMap& prop_map) {
   auto* src_vrk = new gsw::VertexRecordKeyPb;
   src_vrk->set_label(src_label);
   src_vrk->mutable_pk_properties()->insert({"id", src_id});
@@ -71,7 +75,7 @@ void BatchBuilder::AddEdge(const std::string& label, const std::string& src_labe
   erk->set_label(label);
   erk->set_allocated_src_vertex_key(src_vrk);
   erk->set_allocated_dst_vertex_key(dst_vrk);
-  erk->set_inner_id(-1L);
+  erk->set_inner_id(edge_inner_id);
   auto* dr = new gsw::DataRecordPb;
   dr->set_allocated_edge_record_key(erk);
   auto& props = *(dr->mutable_properties());
