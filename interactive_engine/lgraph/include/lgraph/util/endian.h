@@ -18,6 +18,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cstdint>
 #include "lgraph/common/namespace.h"
 
 namespace LGRAPH_NAMESPACE {
@@ -38,7 +39,7 @@ template<typename T>
 T Endian::SwapEndian(T val, typename std::enable_if<std::is_arithmetic<T>::value, std::nullptr_t>::type) {
   union U {
     T val;
-    std::array<std::uint8_t, sizeof(T)> raw;
+    std::array<uint8_t, sizeof(T)> raw;
   } src, dst;
 
   src.val = val;

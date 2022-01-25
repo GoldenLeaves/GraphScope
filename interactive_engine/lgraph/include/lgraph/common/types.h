@@ -15,7 +15,7 @@
  */
 
 #pragma once
-#pragma GCC diagnostic ignored "-Wreturn-type-c-linkage"
+// #pragma GCC diagnostic ignored "-Wreturn-type-c-linkage"
 
 #include <cstddef>
 #include <cstdint>
