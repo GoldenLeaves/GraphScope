@@ -58,13 +58,13 @@ function(PROTOBUF_GENERATE_CPP SRCS HDRS PROTO_ROOT BUILD_DIR SRCS_DEST HDRS_DES
         file(RELATIVE_PATH REL ${PROTO_ROOT} ${ABS_PATH})
 
         add_custom_command(
-                OUTPUT "${SRCS_DEST}/${REL}/${FIL_WE}.pb.cc" "${HDRS_DEST}/${REL}/${FIL_WE}.pb.h"
-                DEPENDS ${ABS_FIL} protobuf::protoc
-                COMMAND protobuf::protoc --cpp_out ${BUILD_DIR} ${_protobuf_include_path} ${ABS_FIL}
-                COMMAND cp ${BUILD_DIR}/${REL}/${FIL_WE}.pb.cc ${SRCS_DEST}/${REL}/
-                COMMAND cp ${BUILD_DIR}/${REL}/${FIL_WE}.pb.h ${HDRS_DEST}/${REL}/
-                COMMENT "Running C++ protocol buffer compiler on ${FIL}"
-                VERBATIM)
+            OUTPUT "${SRCS_DEST}/${REL}/${FIL_WE}.pb.cc" "${HDRS_DEST}/${REL}/${FIL_WE}.pb.h"
+            DEPENDS ${ABS_FIL} protobuf::protoc
+            COMMAND protobuf::protoc --cpp_out ${BUILD_DIR} ${_protobuf_include_path} ${ABS_FIL}
+            COMMAND cp ${BUILD_DIR}/${REL}/${FIL_WE}.pb.cc ${SRCS_DEST}/${REL}/
+            COMMAND cp ${BUILD_DIR}/${REL}/${FIL_WE}.pb.h ${HDRS_DEST}/${REL}/
+            COMMENT "Running C++ protocol buffer compiler on ${FIL}"
+            VERBATIM)
 
         list(APPEND ${SRCS} "${SRCS_DEST}/${REL}/${FIL_WE}.pb.cc")
         list(APPEND ${HDRS} "${HDRS_DEST}/${REL}/${FIL_WE}.pb.h")

@@ -17,6 +17,7 @@
 #pragma once
 
 #include <grpc++/grpc++.h>
+#include "lgraph/client/write_batch_builder.h"
 #include "lgraph/common/backup_info.h"
 #include "lgraph/common/logger_info.h"
 #include "lgraph/proto/client.grpc.pb.h"
@@ -30,13 +31,19 @@ public:
   explicit GraphClient(const std::string &target)
       : GraphClient(grpc::CreateChannel(target, grpc::InsecureChannelCredentials())) {}
   explicit GraphClient(const std::shared_ptr<grpc::Channel> &channel)
-      : client_stub_(Client::NewStub(channel)), client_backup_stub_(ClientBackup::NewStub(channel)) {}
+      : client_stub_(Client::NewStub(channel)),
+        client_backup_stub_(ClientBackup::NewStub(channel)),
+        client_write_stub_(gsw::ClientWrite::NewStub(channel)) {}
   ~GraphClient() = default;
 
   Schema GetGraphSchema();
-  Schema LoadJsonSchema(const char *json_schema_file);
+  Schema LoadJsonSchema(const std::string& json_schema_file);
   LoggerInfo GetLoggerInfo();
   int32_t GetPartitionNum();
+
+  SnapshotId BatchWrite(const gsw::BatchWriteRequest& request);
+  bool RemoteFlush(SnapshotId snapshot_id, int64_t timeout_ms);
+
   BackupId CreateNewBackup();
   void DeleteBackup(BackupId backup_id);
   void PurgeOldBackups(int32_t keep_alive_num);
@@ -47,6 +54,7 @@ public:
 private:
   std::unique_ptr<Client::Stub> client_stub_;
   std::unique_ptr<ClientBackup::Stub> client_backup_stub_;
+  std::unique_ptr<gsw::ClientWrite::Stub> client_write_stub_;
 };
 
 }

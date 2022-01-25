@@ -16,11 +16,11 @@ package com.alibaba.maxgraph.servers;
 import com.alibaba.maxgraph.common.RoleType;
 import com.alibaba.maxgraph.common.config.CommonConfig;
 import com.alibaba.maxgraph.common.config.Configs;
-import com.alibaba.maxgraph.common.config.KafkaConfig;
-import com.alibaba.maxgraph.common.config.ZkConfig;
+//import com.alibaba.maxgraph.common.config.KafkaConfig;
+//import com.alibaba.maxgraph.common.config.ZkConfig;
 import com.alibaba.maxgraph.compiler.api.exception.MaxGraphException;
 import com.google.common.annotations.VisibleForTesting;
-import com.salesforce.kafka.test.KafkaTestCluster;
+//import com.salesforce.kafka.test.KafkaTestCluster;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,35 +28,35 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
+//import java.util.Properties;
 
 public class MaxNode extends NodeBase {
     private static final Logger logger = LoggerFactory.getLogger(MaxNode.class);
 
-    private KafkaTestCluster kafkaTestCluster;
+//    private KafkaTestCluster kafkaTestCluster;
     private NodeBase coordinator;
     private List<NodeBase> frontends = new ArrayList<>();
     private List<NodeBase> ingestors = new ArrayList<>();
     private List<NodeBase> stores = new ArrayList<>();
 
     public MaxNode(Configs configs) throws Exception {
-        Properties kafkaConfigs = new Properties();
-        kafkaConfigs.put("max.request.size", 10000000);
-        this.kafkaTestCluster = new KafkaTestCluster(1, kafkaConfigs);
-        this.kafkaTestCluster.start();
+//        Properties kafkaConfigs = new Properties();
+//        kafkaConfigs.put("max.request.size", 10000000);
+//        this.kafkaTestCluster = new KafkaTestCluster(1, kafkaConfigs);
+//        this.kafkaTestCluster.start();
 
-        int frontendCount = 1;
-        int ingestorCount = 2;
+        int frontendCount = CommonConfig.FRONTEND_NODE_COUNT.get(configs);
+        int ingestorCount = CommonConfig.INGESTOR_NODE_COUNT.get(configs);
         int storeCount = CommonConfig.STORE_NODE_COUNT.get(configs);
 
         Configs baseConfigs =
                 Configs.newBuilder(configs)
-                        .put(
-                                ZkConfig.ZK_CONNECT_STRING.getKey(),
-                                this.kafkaTestCluster.getZookeeperConnectString())
-                        .put(
-                                KafkaConfig.KAFKA_SERVERS.getKey(),
-                                this.kafkaTestCluster.getKafkaConnectString())
+//                        .put(
+//                                ZkConfig.ZK_CONNECT_STRING.getKey(),
+//                                this.kafkaTestCluster.getZookeeperConnectString())
+//                        .put(
+//                                KafkaConfig.KAFKA_SERVERS.getKey(),
+//                                this.kafkaTestCluster.getKafkaConnectString())
                         .put(
                                 CommonConfig.INGESTOR_NODE_COUNT.getKey(),
                                 String.valueOf(ingestorCount))
@@ -190,11 +190,11 @@ public class MaxNode extends NodeBase {
         }
         this.coordinator.close();
 
-        try {
-            this.kafkaTestCluster.close();
-        } catch (Exception e) {
-            logger.warn("close kafka failed", e);
-        }
+//        try {
+//            this.kafkaTestCluster.close();
+//        } catch (Exception e) {
+//            logger.warn("close kafka failed", e);
+//        }
     }
 
     public static void main(String[] args) throws Exception {

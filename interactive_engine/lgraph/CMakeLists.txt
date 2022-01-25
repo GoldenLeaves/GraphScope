@@ -31,40 +31,62 @@ find_package(Protobuf 3.10.0 REQUIRED)
 find_package(gRPC 1.26.0 REQUIRED)
 find_package(CppKafka 0.3.1 REQUIRED)
 
-# Proto file generating
-set(PROTO_FILE_DIR ${Lgraph_SOURCE_DIR}/../proto)
-set(GRPC_FILES
-  ${PROTO_FILE_DIR}/client.proto
-  ${PROTO_FILE_DIR}/client_backup_service.proto)
-set(PROTO_FILES
-  ${GRPC_FILES}
-  ${PROTO_FILE_DIR}/model.proto
-  ${PROTO_FILE_DIR}/sdk/common.proto)
+# Proto dirs
 set(PROTO_BUILD_DIR ${Lgraph_BINARY_DIR}/generated)
 set(PROTO_SRCS_DEST_DIR ${Lgraph_SOURCE_DIR}/src/proto)
 set(PROTO_HDRS_DEST_DIR ${Lgraph_SOURCE_DIR}/include/lgraph/proto)
 file(MAKE_DIRECTORY ${PROTO_BUILD_DIR})
 file(MAKE_DIRECTORY ${PROTO_SRCS_DEST_DIR}/sdk)
 file(MAKE_DIRECTORY ${PROTO_HDRS_DEST_DIR}/sdk)
-protobuf_generate_cpp(
-  PROTO_SRCS
-  PROTO_HDRS
-  ${PROTO_FILE_DIR}
-  ${PROTO_BUILD_DIR}
-  ${PROTO_GEN_DIR}
-  ${PROTO_SRCS_DEST_DIR}
-  ${PROTO_HDRS_DEST_DIR}
-  ${PROTO_FILES})
-grpc_generate_cpp(
-  GRPC_SRCS
-  GRPC_HDRS
-  ${PROTO_FILE_DIR}
-  ${PROTO_BUILD_DIR}
-  ${PROTO_GEN_DIR}
-  ${PROTO_SRCS_DEST_DIR}
-  ${PROTO_HDRS_DEST_DIR}
-  ${GRPC_FILES})
+
 include_directories(${PROTO_HDRS_DEST_DIR})
+
+# Maxgraph proto file generating
+set(Maxgraph_PROTO_FILE_DIR ${Lgraph_SOURCE_DIR}/../proto)
+set(Maxgraph_GRPC_FILES
+  ${Maxgraph_PROTO_FILE_DIR}/client.proto
+  ${Maxgraph_PROTO_FILE_DIR}/client_backup_service.proto)
+set(Maxgraph_PROTO_FILES
+  ${Maxgraph_GRPC_FILES}
+  ${Maxgraph_PROTO_FILE_DIR}/model.proto
+  ${Maxgraph_PROTO_FILE_DIR}/sdk/common.proto)
+protobuf_generate_cpp(
+  Maxgraph_PROTO_SRCS
+  Maxgraph_PROTO_HDRS
+  ${Maxgraph_PROTO_FILE_DIR}
+  ${PROTO_BUILD_DIR}
+  ${PROTO_SRCS_DEST_DIR}
+  ${PROTO_HDRS_DEST_DIR}
+  ${Maxgraph_PROTO_FILES})
+grpc_generate_cpp(
+  Maxgraph_GRPC_SRCS
+  Maxgraph_GRPC_HDRS
+  ${Maxgraph_PROTO_FILE_DIR}
+  ${PROTO_BUILD_DIR}
+  ${PROTO_SRCS_DEST_DIR}
+  ${PROTO_HDRS_DEST_DIR}
+  ${Maxgraph_GRPC_FILES})
+
+# GraphScope proto file generating
+set(GraphScope_PROTO_FILE_DIR ${Lgraph_SOURCE_DIR}/../../proto/graphscope/proto)
+set(GraphScope_GRPC_FILES ${GraphScope_PROTO_FILE_DIR}/write_service.proto)
+set(GraphScope_PROTO_FILES ${GraphScope_PROTO_FILE_DIR}/write_service.proto)
+protobuf_generate_cpp(
+  GraphScope_PROTO_SRCS
+  GraphScope_PROTO_HDRS
+  ${GraphScope_PROTO_FILE_DIR}
+  ${PROTO_BUILD_DIR}
+  ${PROTO_SRCS_DEST_DIR}
+  ${PROTO_HDRS_DEST_DIR}
+  ${GraphScope_PROTO_FILES})
+grpc_generate_cpp(
+  GraphScope_GRPC_SRCS
+  GraphScope_GRPC_HDRS
+  ${GraphScope_PROTO_FILE_DIR}
+  ${PROTO_BUILD_DIR}
+  ${PROTO_SRCS_DEST_DIR}
+  ${PROTO_HDRS_DEST_DIR}
+  ${GraphScope_GRPC_FILES})
 
 # Maxgraph Ffi Dependency
 if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
@@ -79,6 +101,7 @@ set(Maxgraph_FFI_LIB ${Maxgraph_FFI_LIB_DIR}/libmaxgraph_ffi.${DYLIB_SUFFIX})
 # Add library
 set(Lgraph_PROJECT_FILES
   include/lgraph/client/graph_client.h
+  include/lgraph/client/write_batch_builder.h
   include/lgraph/common/backup_info.h
   include/lgraph/common/check.h
   include/lgraph/common/logger_info.h
@@ -113,10 +136,14 @@ set(Lgraph_PROJECT_FILES
   src/check.cc)
 add_library(lgraph ${Lgraph_LIBRARY_TYPE}
   ${Lgraph_PROJECT_FILES}
-  ${PROTO_SRCS}
-  ${PROTO_HDRS}
-  ${GRPC_SRCS}
-  ${GRPC_HDRS})
+  ${Maxgraph_PROTO_SRCS}
+  ${Maxgraph_PROTO_HDRS}
+  ${Maxgraph_GRPC_SRCS}
+  ${Maxgraph_GRPC_HDRS}
+  ${GraphScope_PROTO_SRCS}
+  ${GraphScope_PROTO_HDRS}
+  ${GraphScope_GRPC_SRCS}
+  ${GraphScope_GRPC_HDRS})
 add_library(Lgraph::lgraph ALIAS lgraph)
 set_target_properties(lgraph PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 target_include_directories(lgraph

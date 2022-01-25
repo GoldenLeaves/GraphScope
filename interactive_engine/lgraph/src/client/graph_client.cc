@@ -30,7 +30,7 @@ Schema GraphClient::GetGraphSchema() {
   return Schema::FromProto(response.graphdef());
 }
 
-Schema GraphClient::LoadJsonSchema(const char *json_schema_file) {
+Schema GraphClient::LoadJsonSchema(const std::string& json_schema_file) {
   std::ifstream infile(json_schema_file);
   std::vector<char> buffer;
   infile.seekg(0, infile.end);
@@ -66,6 +66,25 @@ int32_t GraphClient::GetPartitionNum() {
   grpc::Status s = client_stub_->getPartitionNum(&ctx, request, &response);
   Check(s.ok(), "Get partition number failed!");
   return response.partitionnum();
+}
+
+SnapshotId GraphClient::BatchWrite(const gsw::BatchWriteRequest& request) {
+  grpc::ClientContext ctx;
+  gsw::BatchWriteResponse response;
+  grpc::Status s = client_write_stub_->batchWrite(&ctx, request, &response);
+  Check(s.ok(), "Batch writing failed!");
+  return response.snapshot_id();
+}
+
+bool GraphClient::RemoteFlush(SnapshotId snapshot_id, int64_t timeout_ms) {
+  grpc::ClientContext ctx;
+  gsw::RemoteFlushRequest request;
+  request.set_snapshot_id(static_cast<int64_t>(snapshot_id));
+  request.set_wait_time_ms(timeout_ms);
+  gsw::RemoteFlushResponse response;
+  grpc::Status s = client_write_stub_->remoteFlush(&ctx, request, &response);
+  Check(s.ok(), "Remote flushing failed!");
+  return response.success();
 }
 
 BackupId GraphClient::CreateNewBackup() {

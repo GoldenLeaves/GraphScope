@@ -58,13 +58,13 @@ function(GRPC_GENERATE_CPP SRCS HDRS PROTO_ROOT BUILD_DIR SRCS_DEST HDRS_DEST)
         file(RELATIVE_PATH REL ${PROTO_ROOT} ${ABS_PATH})
 
         add_custom_command(
-                OUTPUT "${SRCS_DEST}/${REL}/${FIL_WE}.grpc.pb.cc" "${HDRS_DEST}/${REL}/${FIL_WE}.grpc.pb.h"
-                DEPENDS ${ABS_FIL} protobuf::protoc gRPC::grpc_cpp_plugin
-                COMMAND protobuf::protoc --grpc_out ${BUILD_DIR} ${_protobuf_include_path} --plugin=protoc-gen-grpc=${GRPC_CPP_PLUGIN} ${ABS_FIL}
-                COMMAND cp ${BUILD_DIR}/${REL}/${FIL_WE}.grpc.pb.cc ${SRCS_DEST}/${REL}/
-                COMMAND cp ${BUILD_DIR}/${REL}/${FIL_WE}.grpc.pb.h ${HDRS_DEST}/${REL}/
-                COMMENT "Running C++ gRPC compiler on ${FIL}"
-                VERBATIM)
+            OUTPUT "${SRCS_DEST}/${REL}/${FIL_WE}.grpc.pb.cc" "${HDRS_DEST}/${REL}/${FIL_WE}.grpc.pb.h"
+            DEPENDS ${ABS_FIL} protobuf::protoc gRPC::grpc_cpp_plugin
+            COMMAND protobuf::protoc --grpc_out ${BUILD_DIR} ${_protobuf_include_path} --plugin=protoc-gen-grpc=${GRPC_CPP_PLUGIN} ${ABS_FIL}
+            COMMAND cp ${BUILD_DIR}/${REL}/${FIL_WE}.grpc.pb.cc ${SRCS_DEST}/${REL}/
+            COMMAND cp ${BUILD_DIR}/${REL}/${FIL_WE}.grpc.pb.h ${HDRS_DEST}/${REL}/
+            COMMENT "Running C++ gRPC compiler on ${FIL}"
+            VERBATIM)
 
         list(APPEND ${SRCS} "${SRCS_DEST}/${REL}/${FIL_WE}.grpc.pb.cc")
         list(APPEND ${HDRS} "${HDRS_DEST}/${REL}/${FIL_WE}.grpc.pb.h")
