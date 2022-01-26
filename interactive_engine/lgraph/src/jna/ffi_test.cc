@@ -211,7 +211,7 @@ bool TestScanEdge(db::Snapshot* ss, std::stringstream& logger) {
 
 bool TestGetVertex(db::Snapshot* ss, std::stringstream& logger) {
   // Get vertex: <VertexID: 2233628339503041259> <Label: software> <id: 5> <lang: java> <name: ripple>
-  VertexId query_vid = 2233628339503041259U;
+  VertexId query_vid = 2233628339503041259;
   int64_t expect_id_prop = 5L;
   std::string expect_name_prop = "ripple";
   std::string expect_lang_prop = "java";
@@ -293,7 +293,7 @@ bool TestGetEdge(db::Snapshot* ss, std::stringstream& logger) {
   // Get edge: <EdgeID: (0, 16401677891599130309, 10454779632061085998)>
   //           <EdgeRelation: (created, person, software)>
   //           <id: 12> <weight: 0.200000>
-  EdgeId query_edge_id{0, 16401677891599130309U, 10454779632061085998U};
+  EdgeId query_edge_id{0, 1, 2};
   EdgeRelation query_edge_rel{created_EdgeLabelId, person_LabelId, software_LabelId};
   int64_t expect_id_prop = 12L;
   double expect_weight_prop = 0.200000;
@@ -352,7 +352,7 @@ bool TestGetEdge(db::Snapshot* ss, std::stringstream& logger) {
 
 bool TestGetOutEdges(db::Snapshot* ss, std::stringstream& logger) {
   // Query src vertex: <VertexID: 10714315738933730127> <Label: person> <age: 29> <name: marko> <id: 1>
-  VertexId query_vid = 10714315738933730127U;
+  VertexId query_vid = 1;
   unsigned expect_knows_num = 2;
   unsigned expect_created_num = 1;
 
@@ -423,7 +423,7 @@ bool TestGetOutEdges(db::Snapshot* ss, std::stringstream& logger) {
 
 bool TestGetInEdges(db::Snapshot* ss, std::stringstream& logger) {
   // Query src vertex: <VertexID: 10454779632061085998> <Label: software> <id: 3> <name: lop> <lang: java>
-  VertexId query_vid = 10454779632061085998U;
+  VertexId query_vid = 1;
   unsigned expect_nbr_num = 3;
 
   auto r = ss->GetInEdges(query_vid);
@@ -462,7 +462,7 @@ bool TestGetInEdges(db::Snapshot* ss, std::stringstream& logger) {
 
 bool TestGetOutDegree(db::Snapshot* ss, std::stringstream& logger) {
   // Query src vertex: <VertexID: 12334515728491031937> <Label: person> <name: josh> <id: 4> <age: 32>
-  VertexId query_vid = 12334515728491031937U;
+  VertexId query_vid = 1;
   EdgeRelation query_edge_rel{created_EdgeLabelId, person_LabelId, software_LabelId};
   size_t expect_created_degree = 2;
 
@@ -484,7 +484,7 @@ bool TestGetOutDegree(db::Snapshot* ss, std::stringstream& logger) {
 
 bool TestGetInDegree(db::Snapshot* ss, std::stringstream& logger) {
   // Query src vertex: <VertexID: 10454779632061085998> <Label: software> <id: 3> <name: lop> <lang: java>
-  VertexId query_vid = 10454779632061085998U;
+  VertexId query_vid = 1;
   EdgeRelation query_edge_rel{created_EdgeLabelId, person_LabelId, software_LabelId};
   size_t expect_created_degree = 3;
 
@@ -506,10 +506,10 @@ bool TestGetInDegree(db::Snapshot* ss, std::stringstream& logger) {
 
 bool TestGetKthOutEdge(db::Snapshot* ss, std::stringstream& logger) {
   // Query src vertex: <VertexID: 10714315738933730127> <Label: person> <age: 29> <id: 1> <name: marko>
-  VertexId query_vid = 10714315738933730127U;
+  VertexId query_vid = 1;
   EdgeRelation query_edge_rel{knows_EdgeLabelId, person_LabelId, person_LabelId};
   SerialId k1 = 1;
-  VertexId expect_k1_nbr_vid = 12334515728491031937U;
+  VertexId expect_k1_nbr_vid = 2;
   SerialId k2 = 5;
 
   auto r1 = ss->GetKthOutEdge(query_vid, query_edge_rel, k1);
@@ -549,10 +549,10 @@ bool TestGetKthOutEdge(db::Snapshot* ss, std::stringstream& logger) {
 
 bool TestGetKthInEdge(db::Snapshot* ss, std::stringstream& logger) {
   // Query src vertex: <VertexID: 10454779632061085998> <Label: software> <id: 3> <name: lop> <lang: java>
-  VertexId query_vid = 10454779632061085998U;
+  VertexId query_vid = 1;
   EdgeRelation query_edge_rel{created_EdgeLabelId, person_LabelId, software_LabelId};
   SerialId k1 = 2;
-  VertexId expect_k1_nbr_vid = 16401677891599130309U;
+  VertexId expect_k1_nbr_vid = 2;
   SerialId k2 = 5;
 
   auto r1 = ss->GetKthInEdge(query_vid, query_edge_rel, k1);

@@ -25,13 +25,13 @@
 
 namespace LGRAPH_NAMESPACE {
 
-typedef uint64_t SnapshotId;
-typedef uint32_t LabelId;
-typedef uint64_t VertexId;
-typedef uint64_t EdgeInnerId;
-typedef uint32_t PropertyId;
-typedef uint32_t SerialId;
-typedef int32_t BackupId;
+using SnapshotId = int64_t;
+using LabelId = int32_t;
+using VertexId = int64_t;
+using EdgeInnerId = int64_t;
+using PropertyId = int32_t;
+using SerialId = uint32_t;
+using BackupId = int32_t;
 
 enum EntityType : int32_t {
   VERTEX = 0,
