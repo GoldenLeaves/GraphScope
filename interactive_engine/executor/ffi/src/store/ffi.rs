@@ -365,7 +365,7 @@ pub extern fn GetVertexProperty(vertex_handle: VertexHandle, property_id: Proper
 pub extern fn GetVertexPropertyIterator(vertex_handle: VertexHandle) -> PropertyIteratorHandle {
     unsafe {
         let handler = &*(vertex_handle as *const FfiVertex);
-        let iter_hdl = Box::new(handler.get_property_iterator());
+        let iter_hdl = handler.get_property_iterator();
         Box::into_raw(iter_hdl) as PropertyIteratorHandle
     }
 }
@@ -429,7 +429,7 @@ pub extern fn GetEdgeProperty(edge_handle: EdgeHandle, property_id: PropertyId) 
 pub extern fn GetEdgePropertyIterator(edge_handle: EdgeHandle) -> PropertyIteratorHandle {
     unsafe {
         let handler = &*(edge_handle as *const FfiEdge);
-        let iter_hdl = Box::new(handler.get_property_iterator());
+        let iter_hdl = handler.get_property_iterator();
         Box::into_raw(iter_hdl) as PropertyIteratorHandle
     }
 }
