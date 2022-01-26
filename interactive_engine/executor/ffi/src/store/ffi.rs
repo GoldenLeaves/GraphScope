@@ -141,7 +141,7 @@ pub extern fn ScanVertex(partition_snapshot: PartitionSnapshotHandle,
         let handler = &*(partition_snapshot as *const FfiSnapshot);
         match handler.scan_vertex(label_option(label_id), None, None) {
             Ok(data) => {
-                Box::into_raw(data) as VertexIteratorHandle
+                Box::into_raw(Box::new(data)) as VertexIteratorHandle
             }
             Err(e) => {
                 let error_hdl = Box::new(e);
@@ -161,7 +161,7 @@ pub extern fn ScanEdge(partition_snapshot: PartitionSnapshotHandle,
         let handler = &*(partition_snapshot as *const FfiSnapshot);
         match handler.scan_edge(edge_relation_option(edge_relation).map(|r| r.get_edge_label_id()), None, None) {
             Ok(data) => {
-                Box::into_raw(data) as EdgeIteratorHandle
+                Box::into_raw(Box::new(data)) as EdgeIteratorHandle
             }
             Err(e) => {
                 let error_hdl = Box::new(e);
@@ -181,7 +181,7 @@ pub extern fn GetOutEdges(partition_snapshot: PartitionSnapshotHandle,
         let handler = &*(partition_snapshot as *const FfiSnapshot);
         match handler.get_out_edges(vertex_id, label_option(edge_label_id), None, None) {
             Ok(data) => {
-                Box::into_raw(data) as EdgeIteratorHandle
+                Box::into_raw(Box::new(data)) as EdgeIteratorHandle
             }
             Err(e) => {
                 let error_hdl = Box::new(e);
@@ -201,7 +201,7 @@ pub extern fn GetInEdges(partition_snapshot: PartitionSnapshotHandle,
         let handler = &*(partition_snapshot as *const FfiSnapshot);
         match handler.get_in_edges(vertex_id, label_option(edge_label_id), None, None) {
             Ok(data) => {
-                Box::into_raw(data) as EdgeIteratorHandle
+                Box::into_raw(Box::new(data)) as EdgeIteratorHandle
             }
             Err(e) => {
                 let error_hdl = Box::new(e);
@@ -624,7 +624,7 @@ pub extern fn ReleaseVertexHandle(ptr: VertexHandle) {
 pub extern fn ReleaseVertexIteratorHandle(ptr: VertexIteratorHandle) {
     let handler = ptr as *mut FfiVertexIterator;
     unsafe {
-        Box::from_raw(handler);
+        drop(Box::from_raw(handler));
     }
 }
 
@@ -640,7 +640,7 @@ pub extern fn ReleaseEdgeHandle(ptr: EdgeHandle) {
 pub extern fn ReleaseEdgeIteratorHandle(ptr: EdgeIteratorHandle) {
     let handler = ptr as *mut FfiEdgeIterator;
     unsafe {
-        Box::from_raw(handler);
+        drop(Box::from_raw(handler));
     }
 }
 

@@ -5,6 +5,7 @@ use crate::db::graph::entity::{RocksVertexImpl, RocksEdgeImpl};
 use crate::db::graph::bin::{vertex_table_prefix_key, parse_vertex_key, edge_table_prefix_key, parse_edge_key, edge_prefix};
 use crate::db::graph::codec::{get_codec_version};
 use crate::db::api::{EdgeDirection, SnapshotId, GraphResult, Records, VertexId};
+use std::iter::Empty;
 
 pub struct VertexTypeScan {
     storage: Arc<dyn ExternalStorage>,
