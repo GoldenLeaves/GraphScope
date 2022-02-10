@@ -30,7 +30,7 @@ public:
 
   BatchBuilder() : bwr_(), record_num_(0) {}
 
-  void AddVertex(const std::string& label, const PropertyMap& prop_map);
+  void AddVertex(const std::string& label, const std::string& id, const PropertyMap& prop_map);
   void AddEdge(const std::string& label, int64_t edge_inner_id,
                const std::string& src_label, const std::string& src_id,
                const std::string& dst_label, const std::string& dst_id,
@@ -45,9 +45,10 @@ private:
 };
 
 inline
-void BatchBuilder::AddVertex(const std::string& label, const PropertyMap& prop_map) {
+void BatchBuilder::AddVertex(const std::string& label, const std::string& id, const PropertyMap& prop_map) {
   auto* vrk = new gsw::VertexRecordKeyPb;
   vrk->set_label(label);
+  vrk->mutable_pk_properties()->insert({"id", id});
   auto* dr = new gsw::DataRecordPb;
   dr->set_allocated_vertex_record_key(vrk);
   auto& props = *(dr->mutable_properties());
